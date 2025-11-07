@@ -1,28 +1,34 @@
-import { useState } from 'react'
+import React from 'react';
+import AnimatedMenu from './components/AnimatedMenu';
+import Hero from './components/Hero';
+import ParallaxSections from './components/ParallaxSections';
+import ScrollingBackground from './components/ScrollingBackground';
+import CTA from './components/CTA';
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const App = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Vibe Coding Platform
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Your AI-powered development environment
-        </p>
-        <div className="text-center">
-          <button
-            onClick={() => setCount(count + 1)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Count is {count}
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
+    <div id="home" className="relative min-h-screen bg-black text-white">
+      {/* Interactive starfield and glow background */}
+      <ScrollingBackground />
 
-export default App
+      {/* Header with animated full-screen menu */}
+      <AnimatedMenu />
+
+      {/* Hero with Spline 3D scene */}
+      <Hero />
+
+      {/* Parallax-driven features section */}
+      <ParallaxSections />
+
+      {/* Call to Action */}
+      <CTA />
+
+      {/* Footer */}
+      <footer className="border-t border-white/10 bg-black/60 py-8 text-center text-sm text-white/60">
+        © {new Date().getFullYear()} CyberGym. Train beyond limits.
+      </footer>
+    </div>
+  );
+};
+
+export default App;
