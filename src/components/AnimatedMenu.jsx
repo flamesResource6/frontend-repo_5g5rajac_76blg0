@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 import { Menu, X, Dumbbell, User, Home, Calendar, Phone } from 'lucide-react';
 
 const navItems = [
@@ -13,6 +13,8 @@ const navItems = [
 const AnimatedMenu = () => {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 140, damping: 20, mass: 0.2 });
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -22,6 +24,12 @@ const AnimatedMenu = () => {
 
   return (
     <header className={`fixed top-0 z-50 w-full transition-all ${scrolled ? 'backdrop-blur bg-black/40' : 'bg-transparent'}`}>
+      {/* Scroll progress indicator */}
+      <motion.div
+        className="absolute left-0 top-0 h-1 origin-left bg-gradient-to-r from-fuchsia-500 via-indigo-500 to-sky-500"
+        style={{ scaleX: progress }}
+      />
+
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:px-12">
         <a href="#home" className="flex items-center gap-2 text-white">
           <Dumbbell className="h-6 w-6 text-fuchsia-400" />
@@ -38,8 +46,9 @@ const AnimatedMenu = () => {
 
         <nav className="hidden gap-6 md:flex">
           {navItems.map(({ label, href }) => (
-            <a key={label} href={href} className="text-sm text-white/80 hover:text-white">
+            <a key={label} href={href} className="group relative text-sm text-white/80 hover:text-white">
               {label}
+              <span className="absolute -bottom-1 left-0 h-px w-0 bg-gradient-to-r from-fuchsia-500 to-indigo-500 transition-all group-hover:w-full" />
             </a>
           ))}
         </nav>
@@ -57,7 +66,7 @@ const AnimatedMenu = () => {
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
-              transition={{ type: 'spring', stiffness: 120, damping: 20 }}
+              transition={{ type: 'spring', stiffness: 140, damping: 18 }}
               className="absolute bottom-0 left-0 right-0 top-0 flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-black via-zinc-900 to-black"
             >
               <button
@@ -74,7 +83,7 @@ const AnimatedMenu = () => {
                     key={label}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.05 * i }}
+                    transition={{ delay: 0.06 * i }}
                   >
                     <a
                       href={href}
@@ -88,14 +97,23 @@ const AnimatedMenu = () => {
                 ))}
               </ul>
 
+              {/* Ambient glow layers that don't block interaction */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
                 className="pointer-events-none absolute inset-0"
               >
-                <div className="absolute -left-32 top-10 h-80 w-80 rounded-full bg-fuchsia-600/20 blur-3xl" />
-                <div className="absolute -bottom-16 right-10 h-80 w-80 rounded-full bg-indigo-600/20 blur-3xl" />
+                <motion.div
+                  className="absolute -left-32 top-10 h-80 w-80 rounded-full bg-fuchsia-600/20 blur-3xl"
+                  animate={{ y: [0, -20, 0], opacity: [0.6, 0.9, 0.6] }}
+                  transition={{ repeat: Infinity, duration: 8 }}
+                />
+                <motion.div
+                  className="absolute -bottom-16 right-10 h-80 w-80 rounded-full bg-indigo-600/20 blur-3xl"
+                  animate={{ y: [0, 20, 0], opacity: [0.6, 0.9, 0.6] }}
+                  transition={{ repeat: Infinity, duration: 10 }}
+                />
               </motion.div>
             </motion.div>
           </motion.div>
